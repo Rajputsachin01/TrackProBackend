@@ -1,24 +1,18 @@
 const BannerModel = require("../models/bannerModel") 
 const Helper = require("../utils/helper")
-
 //For creating banner
 const createBanner = async (req, res) =>{
     try{
-      const { title, type, description, image } = req.body
+      const { title,  description, fileUrl } = req.body
 
       if(!title) return Helper.fail(res, "title field is required")
-      if(!type) return Helper.fail(res, "type field is required")
       if(!description) return Helper.fail(res, "description field is required")
-      if(!image) return Helper.fail(res, "image field is required")
+      if(!fileUrl) return Helper.fail(res, "file  is required")
   
- 
-
-
       const bannerCreated = await BannerModel.create({
           title,
-          type,
           description,
-          image  
+          fileUrl  
       })
       if(!bannerCreated){
           return Helper.fail(res, "banner not created")
@@ -35,7 +29,7 @@ const createBanner = async (req, res) =>{
 const updateBanner = async(req, res)=>{
   try {
     const bannerId = req.params.id
-    const { title, type, description, image } = req.body
+    const { title, description, fileUrl } = req.body
     const isExist = await BannerModel.findById(bannerId)
     if(isExist && isExist.isDeleted == true){
         return Helper.fail(res, "Banner no longer exist")
@@ -47,14 +41,11 @@ const updateBanner = async(req, res)=>{
     if(title){
         updatedBanner.title = title
     }
-    if(type){
-        updatedBanner.type = type
-    }
     if(description){
         updatedBanner.description = description
     }
-    if(image){
-        updatedBanner.image = image
+    if(fileUrl){
+        updatedBanner.fileUrl = fileUrl
     }
     // console.log(updatedBanner)
     const bannerUpdate = await BannerModel.findByIdAndUpdate(
@@ -127,7 +118,6 @@ const listingBanner = async (req, res) => {
       let matchStage = { isDeleted: false };
       if (search) {
           matchStage.$or = [
-              { type: { $regex: search, $options: "i" } },      
               { title: { $regex: search, $options: "i" } }     
           ];
       }
@@ -170,19 +160,16 @@ const listingBanner = async (req, res) => {
 const fetchAllBanners = async (req, res) => {
     try {     
         const bannerList = await BannerModel.find({ isDeleted: false });
-        
         if (bannerList.length === 0) {
             return Helper.fail(res, "No banners found");
         }
-  
         return Helper.success(res, "Banners fetched successfully", bannerList);
     } 
     catch (error) {
       console.log(error);
       return Helper.fail(res, error.message);
     }
-  };
-
+};
 module.exports = {  
     createBanner,
     deleteBanner,

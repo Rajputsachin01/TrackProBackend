@@ -37,10 +37,18 @@ const isAuth = async (req, res, next) => {
   }
 };
 
-module.exports = isAuth;
-
-
+const isAdmin = async (req, res, next) => {
+  if (req.type !== 'admin') {
+    return res.status(403).send({
+      status: 0,
+      message: 'Access denied. Admins only.',
+      data: null,
+    });
+  }
+  next();
+};
 module.exports = {
     signInToken,
-    isAuth
+    isAuth,
+    isAdmin
 }

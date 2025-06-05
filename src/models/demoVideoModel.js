@@ -1,15 +1,14 @@
 const mongoose = require("mongoose")
 
-const BannerSchema = new mongoose.Schema({
+const DemoVideosSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
         default: "",
     },
-    description: {
-        type: String,
-        required: true,
-        default: "",
+    isPublished: {
+         type: Boolean,
+        default: false
     },
     fileUrl: {
         type: String,
@@ -23,4 +22,4 @@ const BannerSchema = new mongoose.Schema({
 }, 
  { timestamps: true },
 );
-module.exports = mongoose.model("banner", BannerSchema);
+module.exports = mongoose.model("demoVideo", DemoVideosSchema);

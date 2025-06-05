@@ -26,6 +26,8 @@ app.use(cookieParser());
 
 
 const userRoutes = require("./src/routes/userRoutes");
+const termsAndConditionRoutes = require("./src/routes/termsAndConditionsRoutes");
+const privacyPolicy = require("./src/routes/privacyPolicyRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
 const partnerRoutes = require("./src/routes/partnerRoutes");
@@ -43,6 +45,8 @@ const cliclAndViewsRoutes = require("./src/routes/clicksAndViewsRoutes");
 
 
 app.use("/v1/admin", adminRoutes);
+app.use("/v1/termsAndCondition", termsAndConditionRoutes);
+app.use("/v1/privacyPolicy", privacyPolicy);
 app.use("/v1/user", userRoutes);
 app.use("/v1/banner", bannerRoutes);
 app.use("/v1/partner", partnerRoutes);

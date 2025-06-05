@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const UserSchema = new mongoose.Schema(
   {
      userName: {
@@ -68,5 +67,4 @@ const UserSchema = new mongoose.Schema(
 );
 
 UserSchema.index({ location: "2dsphere" });
-
-module.exports = mongoose.model("users", UserSchema);
+module.exports = mongoose.model("user", UserSchema);

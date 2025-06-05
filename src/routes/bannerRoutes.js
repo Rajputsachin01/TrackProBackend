@@ -1,17 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const { createBanner, removeBanner, listingBanner, updateBanner, deleteBanner,fetchAllBanners } = require("../controller/bannerController");
-const { isAuth } = require("../utils/auth");
+const { isAuth ,isAdmin} = require("../utils/auth");
 
-/*--------------------------------user Routes-------------------------------*/
-router.post("/createbanner", createBanner)
-router.post("/remove", removeBanner)
+/*--------------------------------Banner Routes-------------------------------*/
+router.post("/createbanner",isAuth, isAdmin,createBanner)
+router.post("/remove",isAuth, isAdmin,removeBanner)
 router.post("/listing",isAuth, listingBanner)
 router.post("/fetchBanners", fetchAllBanners)
-router.post("/update/:id", updateBanner)
-router.post("/delete/:id", deleteBanner)
-
-
+router.post("/update/:id",isAuth,isAdmin, updateBanner)
+router.post("/delete/:id",isAuth, isAdmin,deleteBanner)
 
 module.exports = router;
 

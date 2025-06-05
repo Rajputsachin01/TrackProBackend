@@ -76,8 +76,6 @@ const initiateBookingFromCart = async (req, res) => {
     return Helper.fail(res, "Failed to create booking");
   }
 };
-
-
 // get location and address
 const getLocationAndAddress = async (req, res) => {
   try {
@@ -108,7 +106,6 @@ const getLocationAndAddress = async (req, res) => {
     return Helper.fail(res, "failed to add location and address");
   }
 };
-
 //new one 
 const fetchTimeSlots = async (req, res) => {
   try {
@@ -178,7 +175,6 @@ const fetchTimeSlots = async (req, res) => {
     return Helper.fail(res, "Failed to generate time slots");
   }
 };
-
 // select date and time slot and saved in booking
 
 const selectDateAndTimeslot = async (req, res) => {
@@ -217,7 +213,6 @@ const selectDateAndTimeslot = async (req, res) => {
     return Helper.fail(res, "Failed to add date and time slot");
   }
 };
-
 // find booking by id
 const findBookingById = async (req, res) => {
   try {
@@ -258,7 +253,6 @@ const findBookingById = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
 // update booking
 const updateBooking = async (req, res) => {
   try {
@@ -424,7 +418,6 @@ const usersBookingListing = async (req, res) => {
     return Helper.fail(res, "failed to fetch users booking listing");
   }
 };
-
 const autoAssignPartner = async (req, res) => {
   try {
     const { bookingId } = req.body;
@@ -440,7 +433,6 @@ const autoAssignPartner = async (req, res) => {
     return Helper.error(res, "Something went wrong");
   }
 };
-
 const getNearbyPartners = async (req, res) => {
   try {
     const { bookingId } = req.body;
@@ -515,7 +507,6 @@ const getNearbyPartners = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
 const assignPartnerManually = async (req, res) => {
   try {
     const { bookingId, assignments } = req.body;
@@ -556,7 +547,6 @@ const assignPartnerManually = async (req, res) => {
     return Helper.error(res, "Failed to assign partners");
   }
 };
-
 const bookingListing = async (req, res) => {
   try {
     const { page = 1, limit = 10, search = "", bookingStatus } = req.body;
@@ -800,6 +790,5 @@ module.exports = {
   userBookingHistoryOrPending,
   cancelBooking,
   usersBookingListing,
-bookingListing
-  
+  bookingListing
 };
