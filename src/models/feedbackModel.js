@@ -1,28 +1,19 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const feedbackSchema = new mongoose.Schema({
-    serviceId: {
-        type: String,
-        required: true,
-    },
+const feedbackSchema = new mongoose.Schema(
+  {
     userId: {
-        type: String,
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
     },
-    rating: {
-        type: Number,
-        required: true,
-    },
-    review: {
-        type: String,
-        required: true,
-    },
+    message: String,
+    isPublished: { type: Boolean, default: false },
     isDeleted: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-}, 
- { timestamps: true },
+  },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("feedback", feedbackSchema);

@@ -30,18 +30,14 @@ const termsAndConditionRoutes = require("./src/routes/termsAndConditionsRoutes")
 const privacyPolicy = require("./src/routes/privacyPolicyRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
-const partnerRoutes = require("./src/routes/partnerRoutes");
+const featureRoutes = require("./src/routes/featureRoutes");
 const uploadRoutes = require("./src/routes/uploadRoutes");
-const categoryRoutes = require("./src/routes/categoryRoutes");
-const subCategoryRoutes = require("./src/routes/subCategoryRoutes");
-const serviceRoutes = require("./src/routes/serviceRoutes");
-const bookingRoutes = require("./src/routes/bookingRoutes");
-const offerRoutes = require("./src/routes/offerRoutes");
+const faqRoutes = require("./src/routes/faqRoutes");
 const feedbackRoutes = require("./src/routes/feedbackRoutes");
-const notificationRoutes = require("./src/routes/notificationRoutes");
-const jobStatusRoutes = require("./src/routes/JobStatusRoute");
-const reviewRoutes = require("./src/routes/reviewRoutes");
-const cliclAndViewsRoutes = require("./src/routes/clicksAndViewsRoutes");
+const planRoutes = require("./src/routes/planRoutes");
+const brandRoutes = require("./src/routes/brandRoutes");
+const blogRoutes = require("./src/routes/blogRoutes");
+
 
 
 app.use("/v1/admin", adminRoutes);
@@ -49,19 +45,13 @@ app.use("/v1/termsAndCondition", termsAndConditionRoutes);
 app.use("/v1/privacyPolicy", privacyPolicy);
 app.use("/v1/user", userRoutes);
 app.use("/v1/banner", bannerRoutes);
-app.use("/v1/partner", partnerRoutes);
 app.use("/v1/upload", uploadRoutes);
-app.use("/v1/category", categoryRoutes);
-app.use("/v1/subCategory", subCategoryRoutes);
-app.use("/v1/service", serviceRoutes);
-app.use("/v1/booking", bookingRoutes);
-app.use("/v1/offer", offerRoutes);
+app.use("/v1/faq", faqRoutes);
 app.use("/v1/feedback", feedbackRoutes);
-app.use("/v1/notification", notificationRoutes);
-app.use("/v1/jobStatus", jobStatusRoutes);
-app.use("/v1/review", reviewRoutes);
-app.use("/v1/activity", cliclAndViewsRoutes);
-
+app.use("/v1/feature", featureRoutes);
+app.use("/v1/plan", planRoutes);
+app.use("/v1/brand", brandRoutes);
+app.use("/v1/blog", blogRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {

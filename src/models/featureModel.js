@@ -1,28 +1,22 @@
 const mongoose = require("mongoose")
 
-const JobStatusSchema = new mongoose.Schema({
-    partnerId: {
+const FeatureSchema = new mongoose.Schema({
+     icon: {
         type: String,
         required: true,
         default: "",
     },
-    serviceId: {
+    title: {
         type: String,
         required: true,
         default: "",
     },
-    beforeImage: {
+    description: {
         type: String,
         required: true,
+        default: "",
     },
-    afterImage: {
-        type: String,
-        required: true,
-    },
-    notes:{
-        type: String,
-        default: ""
-    },
+   
     isDeleted: {
         type: Boolean,
         default: false
@@ -30,4 +24,4 @@ const JobStatusSchema = new mongoose.Schema({
 }, 
  { timestamps: true },
 );
-module.exports = mongoose.model("jobStatus", JobStatusSchema);
+module.exports = mongoose.model("feature", FeatureSchema);

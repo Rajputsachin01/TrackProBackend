@@ -1,13 +1,9 @@
 const mongoose = require("mongoose")
 
-const CategorySchema = new mongoose.Schema({
-    name: {
+const BannerSchema = new mongoose.Schema({
+    title: {
         type: String,
         required: true,
-        default: "",
-    },
-    images: {
-        type:[ String ],
         default: "",
     },
     description: {
@@ -15,16 +11,16 @@ const CategorySchema = new mongoose.Schema({
         required: true,
         default: "",
     },
-    isPublished: {
-        type: Boolean,
-        default: true
+    logo: {
+        type: String,
+        required: true,
+        default: "",
     },
     isDeleted: {
         type: Boolean,
         default: false
-    },
+    }
 }, 
  { timestamps: true },
 );
-
-module.exports = mongoose.model("categories", CategorySchema);
+module.exports = mongoose.model("brand", BannerSchema);
