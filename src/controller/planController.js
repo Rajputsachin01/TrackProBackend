@@ -232,6 +232,50 @@ const comparePlanFeatures = async (req, res) => {
 };
 
 
+const getFeatureComparison = async (req, res) => {
+  try {
+    const plans = await PlanModel.find({ isDeleted: false });
+
+    // Set of unique feature names
+    const allFeaturesSet = new Set();
+    plans.forEach(plan => {
+      plan.features.forEach(f => {
+        allFeaturesSet.add(f.name);
+      });
+    });
+
+    const allFeatures = Array.from(allFeaturesSet);
+
+    // Prepare comparison data
+    const featureComparison = allFeatures.map(featureName => {
+      const planSupportMap = {};
+
+      plans.forEach(plan => {
+        const matchedFeature = plan.features.find(f => f.name === featureName);
+        planSupportMap[plan.name] = matchedFeature ? matchedFeature.isIncluded : false;
+      });
+
+      return {
+        name: featureName,
+        plans: planSupportMap
+      };
+    });
+
+    return res.json({
+      status: true,
+      message: "Feature comparison fetched successfully",
+      data: {
+        features: featureComparison
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+
+
 module.exports = {
   createPlan,
   updatePlan,
@@ -240,5 +284,6 @@ module.exports = {
   listingPlans,
   fetchAllPlans,
   toggleIsPublished,
-  comparePlanFeatures
+  comparePlanFeatures,
+  getFeatureComparison
 };
