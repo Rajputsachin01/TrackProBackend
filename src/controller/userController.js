@@ -580,6 +580,7 @@ const fetchReferralCode = async (req, res) => {
 
 const listingUser = async (req, res) => {
   try {
+    console.log("test-track")
     const { page = 1, limit = 10, search = "", status } = req.body;
 
     const query = {

@@ -15,7 +15,7 @@ router.post("/resendOTP", resendOTP)
 router.post("/location",isAuth, getUserLocation)
 router.post("/referralCode",isAuth, fetchReferralCode)
 /*--------------------------------Admin Panel Side Routes-------------------------------*/
-router.post("/listingUser",isAuth, listingUser)
+router.post("/listingUser", listingUser)
 
 module.exports = router;
 
