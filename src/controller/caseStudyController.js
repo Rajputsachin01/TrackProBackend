@@ -1,5 +1,6 @@
 const CaseStudyModel = require("../models/caseStudyModel")
 const SolutionModel = require("../models/solutionModel")
+const QueryModel = require("../models/queriesModel")
 
 const Helper = require("../utils/helper");
 
@@ -57,7 +58,7 @@ const getAllCaseStudies = async (req, res) => {
 
 const getCaseStudyById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const caseStudy = await CaseStudyModel.findById(id);
 
     if (!caseStudy) return Helper.fail(res, "Case study not found");
@@ -195,10 +196,102 @@ const fetchAllSolutions = async (req, res) => {
   }
 };
 
+
+
+const createQuery = async (req, res) => {
+  try {
+    const { type, name, email, phone, companyName, message } = req.body;
+
+    if (!type || !name || !email || !phone) {
+      return Helper.fail(res, "type, name, email, and phone are required");
+    }
+
+    const query = await QueryModel.create({
+      type,
+      name,
+      email,
+      phone,
+      companyName,
+      message
+    });
+
+    return Helper.success(res, "Query submitted successfully", query);
+  } catch (error) {
+    console.error(error);
+    return Helper.fail(res, error.message);
+  }
+};
+
+
+
+const listQueries = async (req, res) => {
+  try {
+    const { type, page = 1, limit = 10 } = req.body;
+    const query = {};
+    if (type) query.type = type;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [data, total] = await Promise.all([
+      QueryModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
+      QueryModel.countDocuments(query)
+    ]);
+
+    return Helper.success(res, "Queries fetched", {
+      total,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalPages: Math.ceil(total / limit),
+      data
+    });
+  } catch (error) {
+    console.error(error);
+    return Helper.fail(res, error.message);
+  }
+};
+
+const deleteQuery = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const deleted = await QueryModel.findByIdAndDelete(id);
+    if (!deleted) return Helper.fail(res, "Query not found");
+
+    return Helper.success(res, "Query deleted successfully", deleted);
+  } catch (error) {
+    console.error(error);
+    return Helper.fail(res, error.message);
+  }
+};
+
+
+const markQueryAsRead = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const updatedQuery = await QueryModel.findByIdAndUpdate(
+      id,
+      { isRead: true },
+      { new: true }
+    );
+
+    if (!updatedQuery) {
+      return Helper.fail(res, "Query not found");
+    }
+
+    return Helper.success(res, "Query marked as read", updatedQuery);
+  } catch (error) {
+    console.error(error);
+    return Helper.fail(res, error.message);
+  }
+};
+
 module.exports = {  createCaseStudy,
   getAllCaseStudies,
   getCaseStudyById,
   updateCaseStudy,
   deleteCaseStudy,
 createSolution,
-updateSolution, listSolutions, deleteSolution, fetchAllSolutions}
+updateSolution, listSolutions, deleteSolution, fetchAllSolutions, 
+createQuery, listQueries, deleteQuery, markQueryAsRead 
+}

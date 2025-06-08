@@ -26,4 +26,15 @@ router.post("/deleteSolution",  caseController.deleteSolution);
 router.post("/listingSolution", caseController.listSolutions);
 router.post("/fetchSolutions", caseController.fetchAllSolutions);
 
+
+
+
+//--------------------solution-module---------------------------
+
+
+router.post("/createQuery",  caseController.createQuery);
+router.post("/updateQuery",  caseController.markQueryAsRead);
+router.post("/deleteQuery",  caseController.deleteQuery);
+router.post("/listingQuery", caseController.listQueries);
+
 module.exports = router;

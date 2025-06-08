@@ -35,7 +35,9 @@ const querySchema = new mongoose.Schema(
       trim: true,
       default : ""
 
-    }
+    },
+    isRead: { type: Boolean, default: false }  // 👈 New field
+
   },
   {
     timestamps: true
