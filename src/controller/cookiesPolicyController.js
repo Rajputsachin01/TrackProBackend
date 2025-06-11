@@ -58,7 +58,6 @@ const updateCookiesPolicy = async (req, res) => {
       effectiveDate,
       sections,
       contact,
-      isActive,
     } = req.body;
 
     const existingPolicy = await CookiesPolicyModel.findById(cookiesPolicyId);
@@ -97,7 +96,6 @@ const updateCookiesPolicy = async (req, res) => {
   }
 };
 
-// DELETE (Soft Delete)
 const removeCookiesPolicy = async (req, res) => {
   try {
     const cookiesPolicyId = req.params.id;
@@ -131,9 +129,39 @@ const fetchCookiesPolicy = async (req, res) => {
   }
 };
 
+
+// const axios = require("axios");
+
+// const getCurrentStockPrice = async (req,res) => {
+//     const {symbol} = req.body;
+//   try {
+//     const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+//     const url = `https://www.alphavantage.co/query`;
+
+//     const response = await axios.get(url, {
+//       params: {
+//         function: "GLOBAL_QUOTE",
+//         symbol,
+//         apikey: API_KEY
+//       }
+//     });
+// console.log(response);
+//     const price = response.data["Global Quote"]?.["05. price"];
+//     if (!price) {
+//       throw new Error("Price not found in API response");
+//     }
+//     return Helper.success(res, "data fetched successfully", parseFloat(price));
+//   } catch (err) {
+//     console.error("Alpha Vantage Error:", err.message);
+//     throw err;
+//   }
+// };
+
+
 module.exports = {
   createCookiesPolicy,
   updateCookiesPolicy,
   removeCookiesPolicy,
   fetchCookiesPolicy,
+//   getCurrentStockPrice
 };

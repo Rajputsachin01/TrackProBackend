@@ -2,7 +2,7 @@ const TermsAndConditionModel = require("../models/termsAndConditionModel");
 const Helper = require("../utils/helper");
 const createTerms = async (req, res) => {
   try {
-    const { heading,sections } = req.body;
+    const { heading,sections,contact } = req.body;
 
     if (!heading) {
       return Helper.fail(res, "heading field is required");
@@ -18,7 +18,7 @@ const createTerms = async (req, res) => {
       }
     }
 
-    const createdTerms = await TermsAndConditionModel.create({heading, sections });
+    const createdTerms = await TermsAndConditionModel.create({heading, sections,contact });
 
     if (!createdTerms) return Helper.fail(res, "Terms not created");
 
@@ -31,7 +31,7 @@ const createTerms = async (req, res) => {
 const updateTerms = async (req, res) => {
   try {
     const termsId = req.params.id;
-    const {heading, sections } = req.body;
+    const {heading, sections,contact } = req.body;
     const isExist = await TermsAndConditionModel.findById(termsId);
     if (!isExist || isExist.isDeleted === true) {
       return Helper.fail(res, "Terms entry not found or has been deleted");
@@ -46,6 +46,7 @@ const updateTerms = async (req, res) => {
       }
       updatedData.sections = sections;
       updatedData.heading = heading;
+      updatedData.contact = contact;
     }
 
     const updatedTerms = await TermsAndConditionModel.findByIdAndUpdate(termsId, updatedData, {

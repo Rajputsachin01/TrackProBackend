@@ -2,7 +2,7 @@ const PrivacyPolicyModel = require("../models/privacyPolicyModel");
 const Helper = require("../utils/helper");
 const createPolicy = async (req, res) => {
   try {
-    const { heading,sections } = req.body;
+    const { heading,sections,contact } = req.body;
 
     if (!heading) {
       return Helper.fail(res, "heading field is required");
@@ -18,7 +18,13 @@ const createPolicy = async (req, res) => {
       }
     }
 
-    const createdPolicy = await PrivacyPolicyModel.create({heading, sections });
+    if (contact) {
+          const { name, location, email, phone } = contact;
+          if (!name || !location || !email || !phone) {
+            return Helper.fail(res, "All contact fields (name, location, email, phone) are required");
+          }
+        }
+    const createdPolicy = await PrivacyPolicyModel.create({heading, sections,contact });
 
     if (!createdPolicy) return Helper.fail(res, "PrivacyPolicy not created");
 
@@ -31,7 +37,7 @@ const createPolicy = async (req, res) => {
 const updatePolicy = async (req, res) => {
   try {
     const policyId = req.params.id;
-    const {heading, sections } = req.body;
+    const {heading, sections,contact } = req.body;
     const isExist = await PrivacyPolicyModel.findById(policyId);
     if (!isExist || isExist.isDeleted === true) {
       return Helper.fail(res, "PrivacyPolicy entry not found or has been deleted");
@@ -46,6 +52,7 @@ const updatePolicy = async (req, res) => {
       }
       updatedData.sections = sections;
       updatedData.heading = heading;
+      updatedData.contact = contact;
     }
 
     const updatedPolicy = await PrivacyPolicyModel.findByIdAndUpdate(policyId, updatedData, {

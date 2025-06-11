@@ -16,7 +16,7 @@ const CookiePolicySchema = new mongoose.Schema({
     email: { type: String },
     phone: { type: String },
   },
-  isActive: { type: Boolean, default: true }, // to soft-disable an old policy
+  isDeleted: { type: Boolean, default: false }, // to soft-disable an old policy
 }, {
   timestamps: true
 });

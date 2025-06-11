@@ -25,6 +25,12 @@ const PrivacyPolicySchema = new mongoose.Schema(
       type: [sectionSchema],
       required: true,
     },
+     contact: {
+    name: { type: String },
+    location: { type: String },
+    email: { type: String },
+    phone: { type: String },
+  },
     isDeleted: {
       type: Boolean,
       default: false,
