@@ -27,7 +27,8 @@ app.use(cookieParser());
 
 const userRoutes = require("./src/routes/userRoutes");
 const termsAndConditionRoutes = require("./src/routes/termsAndConditionsRoutes");
-const privacyPolicy = require("./src/routes/privacyPolicyRoutes");
+const privacyPolicyRoutes = require("./src/routes/privacyPolicyRoutes");
+const cookiesPolicyRoutes = require("./src/routes/cookiesPolicyRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
 const featureRoutes = require("./src/routes/featureRoutes");
@@ -41,12 +42,13 @@ const caseRoutes = require("./src/routes/caseStudyRoutes");
 
 
 
+app.use("/v1/upload", uploadRoutes);
 app.use("/v1/admin", adminRoutes);
-app.use("/v1/termsAndCondition", termsAndConditionRoutes);
-app.use("/v1/privacyPolicy", privacyPolicy);
 app.use("/v1/user", userRoutes);
 app.use("/v1/banner", bannerRoutes);
-app.use("/v1/upload", uploadRoutes);
+app.use("/v1/termsAndCondition", termsAndConditionRoutes);
+app.use("/v1/privacyPolicy", privacyPolicyRoutes);
+app.use("/v1/cookiesPolicy", cookiesPolicyRoutes);
 app.use("/v1/faq", faqRoutes);
 app.use("/v1/feedback", feedbackRoutes);
 app.use("/v1/feature", featureRoutes);

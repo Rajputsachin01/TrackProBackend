@@ -488,34 +488,35 @@ const resendOTP = async (req, res) => {
 // login using only phone number
 const loginUser = async (req, res) => {
   try {
-    const { phoneNo } = req.body;
-    if (!phoneNo) {
-      return Helper.fail(res, "phone number is required");
+    const { phoneNo, email } = req.body;
+
+    if (!phoneNo && !email) {
+      return Helper.fail(res, "Either phone number or email is required");
     }
-    const query = {};
-    if (phoneNo) {
-      query.phoneNo = phoneNo;
-    }
-    const user = await UserModel.findOne({
-      $or: [phoneNo ? { phoneNo } : null].filter(Boolean),
+
+    const query = {
       isDeleted: false,
-    });
+      ...(phoneNo ? { phoneNo } : {}),
+      ...(email ? { email } : {})
+    };
+
+    const user = await UserModel.findOne(query);
+
     if (!user) {
-      return Helper.fail(res, "User not found ");
+      return Helper.fail(res, "User not found");
     }
-    // generateOTP();
-    const newotp = "1234";
-    user.otp = newotp;
+
+    // Generate and save OTP
+    const newOtp = "1234"; // Replace with generateOTP() in production
+    user.otp = newOtp;
     await user.save();
-
-    // here code for send the otp to user's phone number
-
-    return Helper.success(res, "OTP sent successfull");
+    return Helper.success(res, "OTP sent successfully");
   } catch (error) {
-    console.log(error);
-    return Helper.fail(res, "failed to send OTP");
+    console.error("Login Error:", error);
+    return Helper.fail(res, "Failed to send OTP");
   }
 };
+
 
 
 // fetch referralCode
