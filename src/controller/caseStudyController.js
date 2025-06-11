@@ -1,9 +1,8 @@
-const CaseStudyModel = require("../models/caseStudyModel")
-const SolutionModel = require("../models/solutionModel")
-const QueryModel = require("../models/queriesModel")
+const CaseStudyModel = require("../models/caseStudyModel");
+const SolutionModel = require("../models/solutionModel");
+const QueryModel = require("../models/queriesModel");
 
 const Helper = require("../utils/helper");
-
 
 const createCaseStudy = async (req, res) => {
   try {
@@ -16,7 +15,7 @@ const createCaseStudy = async (req, res) => {
       problem,
       solution,
       outcome,
-      pdf
+      pdf,
     });
 
     return Helper.success(res, "Case study created successfully", newCaseStudy);
@@ -26,19 +25,15 @@ const createCaseStudy = async (req, res) => {
   }
 };
 
-
 const getAllCaseStudies = async (req, res) => {
   try {
-    const page = parseInt(req.body.page) || 1;      // Default page = 1
-    const limit = parseInt(req.body.limit) || 10;   // Default limit = 10
+    const page = parseInt(req.body.page) || 1; // Default page = 1
+    const limit = parseInt(req.body.limit) || 10; // Default limit = 10
     const skip = (page - 1) * limit;
 
     const [caseStudies, total] = await Promise.all([
-      CaseStudyModel.find()
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit),
-      CaseStudyModel.countDocuments()
+      CaseStudyModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+      CaseStudyModel.countDocuments(),
     ]);
 
     return Helper.success(res, "Case studies fetched successfully", {
@@ -46,15 +41,13 @@ const getAllCaseStudies = async (req, res) => {
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      data: caseStudies
+      data: caseStudies,
     });
   } catch (error) {
     console.error(error);
     return Helper.fail(res, error.message);
   }
 };
-
-
 
 const getCaseStudyById = async (req, res) => {
   try {
@@ -69,7 +62,6 @@ const getCaseStudyById = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
 
 const updateCaseStudy = async (req, res) => {
   try {
@@ -91,7 +83,6 @@ const updateCaseStudy = async (req, res) => {
   }
 };
 
-
 const deleteCaseStudy = async (req, res) => {
   try {
     const { id } = req.body;
@@ -105,9 +96,6 @@ const deleteCaseStudy = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
-
-
 
 const createSolution = async (req, res) => {
   try {
@@ -136,7 +124,8 @@ const updateSolution = async (req, res) => {
       { new: true }
     );
 
-    if (!updated) return Helper.fail(res, "Solution not found or update failed");
+    if (!updated)
+      return Helper.fail(res, "Solution not found or update failed");
     return Helper.success(res, "Solution updated", updated);
   } catch (error) {
     console.error(error);
@@ -163,14 +152,14 @@ const listSolutions = async (req, res) => {
     const page = parseInt(req.body.page) || 1;
     const limit = parseInt(req.body.limit) || 10;
     const skip = (page - 1) * limit;
-let query = {}
-    if(req.body.type){
-        query.type = req.body.type
+    let query = {};
+    if (req.body.type) {
+      query.type = req.body.type;
     }
 
     const [data, total] = await Promise.all([
       SolutionModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
-      SolutionModel.countDocuments()
+      SolutionModel.countDocuments(),
     ]);
 
     return Helper.success(res, "Solutions fetched", {
@@ -178,7 +167,7 @@ let query = {}
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      data
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -196,11 +185,9 @@ const fetchAllSolutions = async (req, res) => {
   }
 };
 
-
-
 const createQuery = async (req, res) => {
   try {
-    const { type, name, email, phone, companyName, message } = req.body;
+    const { type, name, email, phone, companyName, message,isDemo } = req.body;
 
     if (!type || !name || !email || !phone) {
       return Helper.fail(res, "type, name, email, and phone are required");
@@ -212,7 +199,8 @@ const createQuery = async (req, res) => {
       email,
       phone,
       companyName,
-      message
+      message,
+      isDemo
     });
 
     return Helper.success(res, "Query submitted successfully", query);
@@ -221,8 +209,6 @@ const createQuery = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
-
 
 const listQueries = async (req, res) => {
   try {
@@ -233,8 +219,11 @@ const listQueries = async (req, res) => {
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const [data, total] = await Promise.all([
-      QueryModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)),
-      QueryModel.countDocuments(query)
+      QueryModel.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit)),
+      QueryModel.countDocuments(query),
     ]);
 
     return Helper.success(res, "Queries fetched", {
@@ -242,7 +231,7 @@ const listQueries = async (req, res) => {
       page: parseInt(page),
       limit: parseInt(limit),
       totalPages: Math.ceil(total / limit),
-      data
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -263,7 +252,6 @@ const deleteQuery = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
 
 const markQueryAsRead = async (req, res) => {
   try {
@@ -286,12 +274,19 @@ const markQueryAsRead = async (req, res) => {
   }
 };
 
-module.exports = {  createCaseStudy,
+module.exports = {
+  createCaseStudy,
   getAllCaseStudies,
   getCaseStudyById,
   updateCaseStudy,
   deleteCaseStudy,
-createSolution,
-updateSolution, listSolutions, deleteSolution, fetchAllSolutions, 
-createQuery, listQueries, deleteQuery, markQueryAsRead 
-}
+  createSolution,
+  updateSolution,
+  listSolutions,
+  deleteSolution,
+  fetchAllSolutions,
+  createQuery,
+  listQueries,
+  deleteQuery,
+  markQueryAsRead,
+};

@@ -5,14 +5,9 @@ const { isAuth ,isAdmin} = require("../utils/auth");
 
 
 router.post("/createCase", caseController.createCaseStudy);
-
 router.post("/update", caseController.updateCaseStudy);
-
-
 router.post("/delete", caseController.deleteCaseStudy);
-
 router.post("/listing", caseController.getAllCaseStudies);
-
 router.post("/get-by-id", caseController.getCaseStudyById)
 
 
@@ -25,9 +20,6 @@ router.post("/updateSolution",  caseController.updateSolution);
 router.post("/deleteSolution",  caseController.deleteSolution);
 router.post("/listingSolution", caseController.listSolutions);
 router.post("/fetchSolutions", caseController.fetchAllSolutions);
-
-
-
 
 //--------------------solution-module---------------------------
 

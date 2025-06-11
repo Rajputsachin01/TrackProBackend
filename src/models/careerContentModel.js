@@ -1,24 +1,25 @@
+
 const mongoose = require("mongoose");
 const sectionSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
 });
 
-const CareerContentSchema = new mongoose.Schema(
-  {
-    sections: [sectionSchema],
-    isPublished: {
+const CareerContentSchema = new mongoose.Schema({
+  sections: [sectionSchema],
+isPublished: {
       type: Boolean,
       default: true,
+    },
+resumeUrl: {
+      type: String,
     },
     isDeleted: {
       type: Boolean,
       default: false,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+    },}, {
+  timestamps: true
+});
 
 module.exports = mongoose.model("careerContent", CareerContentSchema);
+

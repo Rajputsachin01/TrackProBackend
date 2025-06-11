@@ -4,7 +4,7 @@ const Helper = require("../utils/helper");
 // Create Career Content
 const createCareerContent = async (req, res) => {
   try {
-    const { sections } = req.body;
+    const { sections,resumeUrl } = req.body;
 
     if (!sections || !Array.isArray(sections) || sections.length === 0) {
       return Helper.fail(res, "Sections must be a non-empty array");
@@ -15,9 +15,11 @@ const createCareerContent = async (req, res) => {
         return Helper.fail(res, "Each section must have a title and content");
       }
     }
+    if(!resumeUrl) return Helper.fail(res,"ResumeUrl is required")
 
     const created = await CareerContentModel.create({
       sections,
+      resumeUrl
     });
 
     return Helper.success(res, "Career content created successfully", created);
@@ -31,7 +33,7 @@ const createCareerContent = async (req, res) => {
 const updateCareerContent = async (req, res) => {
   try {
     const id = req.params.id;
-    const { sections } = req.body;
+    const { sections,resumeUrl } = req.body;
 
     const existing = await CareerContentModel.findById(id);
     if (!existing || existing.isDeleted) {
@@ -49,6 +51,7 @@ const updateCareerContent = async (req, res) => {
     }
 
     existing.sections = sections;
+    existing.resumeUrl = resumeUrl;
     const updated = await existing.save();
 
     return Helper.success(res, "Career content updated successfully", updated);

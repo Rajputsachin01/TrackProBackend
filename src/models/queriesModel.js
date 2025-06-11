@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const querySchema = new mongoose.Schema(
+const QuerySchema = new mongoose.Schema(
   {
     type: {
       type: String,
@@ -19,7 +19,7 @@ const querySchema = new mongoose.Schema(
       default : ""
 
     },
-    phone: {
+    phoneNo: {
       type: String,
       trim: true,
       
@@ -36,7 +36,8 @@ const querySchema = new mongoose.Schema(
       default : ""
 
     },
-    isRead: { type: Boolean, default: false }  // 👈 New field
+    isDemo: { type: Boolean, default: false } ,
+    isRead: { type: Boolean, default: false } 
 
   },
   {
@@ -44,4 +45,4 @@ const querySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Query", querySchema);
+module.exports = mongoose.model("query", QuerySchema);
