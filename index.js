@@ -39,6 +39,7 @@ const planRoutes = require("./src/routes/planRoutes");
 const brandRoutes = require("./src/routes/brandRoutes");
 const blogRoutes = require("./src/routes/blogRoutes");
 const caseRoutes = require("./src/routes/caseStudyRoutes");
+const careerContentRoutes = require("./src/routes/careerContentRoutes");
 
 
 
@@ -49,6 +50,7 @@ app.use("/v1/banner", bannerRoutes);
 app.use("/v1/termsAndCondition", termsAndConditionRoutes);
 app.use("/v1/privacyPolicy", privacyPolicyRoutes);
 app.use("/v1/cookiePolicy", cookiesPolicyRoutes);
+app.use("/v1/careerContent", careerContentRoutes);
 app.use("/v1/faq", faqRoutes);
 app.use("/v1/feedback", feedbackRoutes);
 app.use("/v1/feature", featureRoutes);
