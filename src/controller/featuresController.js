@@ -190,7 +190,6 @@ const fetchAllFeatures = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
 module.exports = {  
     createFeature,
     deleteFeature,

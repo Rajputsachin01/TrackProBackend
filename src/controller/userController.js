@@ -138,24 +138,18 @@ const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 const registerUser = async (req, res) => {
   try {
     const {
-      img,
       name,
       email,
       password,
       phoneNo,
-      address,
-      location,
       referralCode,
     } = req.body;
 
     // 1. Field Validations
-    if (!img) return Helper.fail(res, "image is required");
     if (!name) return Helper.fail(res, "name is required");
     if (!email) return Helper.fail(res, "email is required");
     if (!password) return Helper.fail(res, "password is required");
     if (!phoneNo) return Helper.fail(res, "phoneNo is required");
-    // if (!address) return Helper.fail(res, "address is required");
-    // if (!location) return Helper.fail(res, "location is required");
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailRegex.test(email)) return Helper.fail(res, "Email is not valid!");
@@ -223,12 +217,10 @@ const registerUser = async (req, res) => {
     const otp = "1234"; // For dev only, replace with actual generation
     const userObj = {
       userName,
-      img,
+      
       name,
       email,
       phoneNo,
-      address,
-      location,
       password: hashedPassword,
       otp,
       referralCode: newReferralCode,
@@ -248,7 +240,7 @@ const registerUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const userId = req.userId;
-    const { img, name, email, phoneNo } = req.body;
+    const {  name, email, phoneNo } = req.body;
 
     if (!userId) {
       return Helper.fail(res, "User ID is missing from request");
@@ -266,10 +258,6 @@ const updateUser = async (req, res) => {
       objToUpdate.name = name;
     }
 
-    // Validate and update image
-    if (img && img !== user.img) {
-      objToUpdate.img = img;
-    }
 
     // Validate and update email
     if (email && email !== user.email) {
@@ -529,38 +517,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-// get user current location
-const getUserLocation = async (req, res) => {
-  try {
-    const userId = req.userId;
-    const { newLocation, address } = req.body;
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      return Helper.fail(res, "user not found");
-    }
-    if (!newLocation) {
-      return Helper.fail(res, "please select your location");
-    }
-    if (!address) {
-      return Helper.fail(res, "please enter address");
-    }
-    let updatedLocation = await UserModel.findByIdAndUpdate(
-      userId,
-      { location: newLocation, address },
-      {
-        new: true,
-      }
-    );
-    console.log({ updatedLocation });
-    if (!updatedLocation) {
-      return Helper.fail(res, "user location not updated");
-    }
-    return Helper.success(res, "location updated successfully");
-  } catch (error) {
-    console.log(error);
-    return Helper.fail(res, "failed to update location");
-  }
-};
 
 // fetch referralCode
 const fetchReferralCode = async (req, res) => {
@@ -580,7 +536,7 @@ const fetchReferralCode = async (req, res) => {
 
 const listingUser = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search = "", status } = req.body;
+    const { page = 1, limit = 10, search = "", } = req.body;
 
     const query = {
       isDeleted: { $ne: true },
@@ -591,10 +547,6 @@ const listingUser = async (req, res) => {
         { name: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
       ];
-    }
-
-    if (status) {
-      query.status = status; // ✅ apply status filter only if provided
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -628,7 +580,6 @@ module.exports = {
   loginUser,
   verifyOTP,
   resendOTP,
-  getUserLocation,
   fetchReferralCode,
   listingUser,
 };

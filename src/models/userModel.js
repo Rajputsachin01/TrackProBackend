@@ -4,10 +4,6 @@ const UserSchema = new mongoose.Schema(
      userName: {
         type: String,
     },
-    img:{
-      type: String,
-      required: true
-    },
     name:{
       type: String,
       required: true
@@ -29,30 +25,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       default: "",
     },
-    address: {
-      type: [String],
-      required: true,
-      default: [],
-    },
-    status:{
-      type:String,
-      enum:["Active","InActive","Blocked"],
-      default:"Active"
-    },
-    location: {
-      type: {
-        type: String,
-        enum: ['Point'],
-        required: true,
-        default: 'Point'
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-        required: true,
-        default: [0, 0]
-      }
-    },
-    
+       
     referralCode: {
       type: String,
       default: "",
@@ -66,5 +39,4 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-UserSchema.index({ location: "2dsphere" });
 module.exports = mongoose.model("user", UserSchema);
