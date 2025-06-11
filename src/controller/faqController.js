@@ -129,13 +129,16 @@ const listFaqs = async (req, res) => {
 
 const fetchAllFaqs = async (req, res) => {
   try {
-    const { type, limit = 10, page = 1 } = req.body;
+    const { type, limit = 10, page = 1, search = "", } = req.body;
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    const filter = {
+   let filter = {
       isDeleted: false,
-      isPublished: true,
+      $or: [
+        { question: { $regex: search, $options: "i" } },
+        { answer: { $regex: search, $options: "i" } },
+      ],
     };
 
     if (type) {
