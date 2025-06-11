@@ -4,8 +4,7 @@ const createBrand = async (req, res) =>{
     try{
       const { title,  description, logo } = req.body
 
-      if(!title) return Helper.fail(res, "title field is required")
-      if(!description) return Helper.fail(res, "description field is required")
+  
       if(!logo) return Helper.fail(res, "logo  is required")
   
       const brandCreated = await BrandModel.create({
@@ -108,7 +107,7 @@ const removeBrand = async (req,res) =>{
 // listing Brand 
 const listingBrand = async (req, res) => {
   try {
-      const { search, limit = 3, page = 1 } = req.body;
+      const { search, limit = 10, page = 1 } = req.body;
       console.log(search)
       const skip = (parseInt(page) - 1) * parseInt(limit);
 

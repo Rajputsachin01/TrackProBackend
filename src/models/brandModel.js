@@ -3,12 +3,10 @@ const mongoose = require("mongoose")
 const BannerSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
         default: "",
     },
     description: {
         type: String,
-        required: true,
         default: "",
     },
     logo: {
