@@ -371,52 +371,71 @@ const findUserById = async (req, res) => {
 //for verifying OTP
 const verifyOTP = async (req, res) => {
   try {
-    const { number, otp } = req.body;
+    const { number, email, otp } = req.body;
+
     if (!otp) {
-      return Helper.fail(res, " OTP are required");
+      return Helper.fail(res, "OTP is required");
     }
 
-    // Validating phone no.
+    if (!number && !email) {
+      return Helper.fail(res, "Either phone number or email is required");
+    }
+
+    // Validate phone number if provided
     if (number) {
       const phoneRegex = /^\d{6,14}$/;
       if (!phoneRegex.test(number)) {
-        return Helper.fail(res, " Number is not valid!");
+        return Helper.fail(res, "Phone number is not valid!");
       }
     }
-    const user = await UserModel.findOne({ phoneNo: number, otp });
+
+    // Build dynamic query for OTP verification
+    const query = {
+      otp,
+      ...(number ? { phoneNo: number } : {}),
+      ...(email ? { email } : {}),
+    };
+
+    const user = await UserModel.findOne(query);
 
     if (!user) {
       return Helper.fail(res, "Invalid OTP");
     }
-    // let newotp = generateOTP();
-    let newotp = "1234";
-    await UserModel.updateOne({ number: number }, { $set: { otp: newotp } });
-    // Generate JWT token and user details
+
+    // Invalidate OTP (you can also clear it by setting to null/empty string)
+    const newOtp = "1234"; // Replace with generateOTP() in real-world apps
+    await UserModel.updateOne({ _id: user._id }, { $set: { otp: newOtp } });
+
+    // Generate token and get user profile
     const type = "user";
     const { token, userDetail } = await getUserWithToken(user._id, type);
     if (!token || !userDetail) {
       return Helper.error("Failed to generate token or get user profile");
     }
+
+    // Apply referral bonus if applicable
     if (user.referredBy) {
       const referralBonus = 100;
       await WalletModel.findOneAndUpdate(
         { userId: user.referredBy },
         { $inc: { points: referralBonus } },
-        { upsert: true } // Creates wallet if not exists
+        { upsert: true }
       );
       console.log(`100 points credited to referrer: ${user.referredBy}`);
     }
-    // send cookie
+
+    // Set token cookie and return success response
     res.cookie("token", token);
     return Helper.success(res, "Token generated successfully.", {
       token,
       userDetail,
     });
   } catch (error) {
-    console.error(error);
+    console.error("OTP Verification Error:", error);
     return Helper.fail(res, error.message);
   }
 };
+
 // resend OTP
 const resendOTP = async (req, res) => {
   try {
@@ -510,7 +529,7 @@ const loginUser = async (req, res) => {
     const newOtp = "1234"; // Replace with generateOTP() in production
     user.otp = newOtp;
     await user.save();
-    return Helper.success(res, "OTP sent successfully");
+    return Helper.success(res, "OTP sent successfully",user.email);
   } catch (error) {
     console.error("Login Error:", error);
     return Helper.fail(res, "Failed to send OTP");

@@ -48,7 +48,7 @@ app.use("/v1/user", userRoutes);
 app.use("/v1/banner", bannerRoutes);
 app.use("/v1/termsAndCondition", termsAndConditionRoutes);
 app.use("/v1/privacyPolicy", privacyPolicyRoutes);
-app.use("/v1/cookiesPolicy", cookiesPolicyRoutes);
+app.use("/v1/cookiePolicy", cookiesPolicyRoutes);
 app.use("/v1/faq", faqRoutes);
 app.use("/v1/feedback", feedbackRoutes);
 app.use("/v1/feature", featureRoutes);
