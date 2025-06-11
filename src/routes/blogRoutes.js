@@ -9,7 +9,8 @@ router.post("/update/:id",isAuth,isAdmin, blogController.updateBlog)
 router.post("/remove",isAuth, isAdmin,blogController.removeBlog)
 router.post("/delete/:id",isAuth, isAdmin,blogController.deleteBlog)
 router.post("/toggleIsPublished/:id", blogController.toggleIsPublished)
-router.post("/listing",isAuth, blogController.listingBlog)
+router.post("/listing", blogController.listingBlog)
 router.post("/fetchBlogs", blogController.fetchAllBlogs)
+router.post("/get-all-category", blogController.getBlogsAndCategories)
 module.exports = router;
 

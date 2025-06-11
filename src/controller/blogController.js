@@ -214,6 +214,31 @@ const toggleIsPublished = async (req, res) => {
   }
 };
 
+
+
+const getBlogsAndCategories = async (req, res) => {
+  try {
+    const result = await BlogModel.aggregate([
+      { $match: { isDeleted: false } },
+      { $unwind: "$category" },
+      { $group: { _id: "$category" } },
+      { $sort: { _id: 1 } }
+    ]);
+
+    const uniqueCategories = result.map(item => item._id);
+
+    return res.json({
+      status: true,
+      message: "Unique categories fetched",
+      data: uniqueCategories
+    });
+  } catch (error) {
+    console.error("Error fetching unique categories:", error);
+    return res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+
 module.exports = {
   createBlog,
   updateBlog,
@@ -222,4 +247,5 @@ module.exports = {
   listingBlog,
   fetchAllBlogs,
   toggleIsPublished,
+  getBlogsAndCategories
 };
