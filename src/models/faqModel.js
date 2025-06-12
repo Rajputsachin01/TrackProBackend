@@ -11,7 +11,7 @@ const FaqSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["Pricing", "Features", "General", "Technical"],
+      enum: ["Pricing", "General",],
       required: true,
     },
     isPublished: {
