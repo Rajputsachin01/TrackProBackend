@@ -8,11 +8,15 @@ const BlogSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+// category: {
+//   type: [String],
+//   enum: ['Productivity', 'Tips', 'Automation', 'Workflows', 'SEO', 'Trends'],
+//   required: true,
+// },
 category: {
-  type: [String],
-  enum: ['Productivity', 'Tips', 'Automation', 'Workflows', 'SEO', 'Trends'],
-  required: true,
-},
+    type: [String],  
+    required: true,
+  },
 
   author: {
     type: String,
