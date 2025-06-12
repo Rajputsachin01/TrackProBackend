@@ -7,7 +7,7 @@ const createFaq = async (req, res) => {
 
     if (!question) return Helper.fail(res, "Question is required");
     if (!answer) return Helper.fail(res, "Answer is required");
-    if (!type) return Helper.fail(res, "Type is required");
+    // if (!type) return Helper.fail(res, "Type is required");
 
     const createdFaq = await FaqModel.create({
       question,
