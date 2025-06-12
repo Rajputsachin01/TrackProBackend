@@ -11,7 +11,8 @@ const FaqSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["Pricing",],
+      enum: ["", "Pricing"],
+      default: "",
     },
     isPublished: {
       type: Boolean,
