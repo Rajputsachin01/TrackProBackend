@@ -187,17 +187,17 @@ const fetchAllSolutions = async (req, res) => {
 
 const createQuery = async (req, res) => {
   try {
-    const { type, name, email, phone, companyName, message,isDemo } = req.body;
+    const { type, name, email, phoneNo, companyName, message,isDemo } = req.body;
 
-    if (!type || !name || !email || !phone) {
-      return Helper.fail(res, "type, name, email, and phone are required");
+    if (!type || !name || !email || !phoneNo) {
+      return Helper.fail(res, "type, name, email, and phoneNo are required");
     }
 
     const query = await QueryModel.create({
       type,
       name,
       email,
-      phone,
+      phoneNo,
       companyName,
       message,
       isDemo

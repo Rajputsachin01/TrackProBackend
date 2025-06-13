@@ -22,7 +22,6 @@ const QuerySchema = new mongoose.Schema(
     phoneNo: {
       type: String,
       trim: true,
-      
     },
     companyName: {
       type: String,
