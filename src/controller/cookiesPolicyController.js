@@ -82,8 +82,7 @@ const updateCookiesPolicy = async (req, res) => {
         effectiveDate,
         sections,
         contact,
-        isActive,
-      },
+        },
       { new: true }
     );
 
