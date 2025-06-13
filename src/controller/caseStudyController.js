@@ -189,8 +189,8 @@ const createQuery = async (req, res) => {
   try {
     const { type, name, email, phoneNo, companyName, message,isDemo } = req.body;
 
-    if (!type || !name || !email || !phoneNo) {
-      return Helper.fail(res, "type, name, email, and phoneNo are required");
+    if (!type || !name || !email ) {
+      return Helper.fail(res, "type, name, and email are required");
     }
 
     const query = await QueryModel.create({
@@ -212,9 +212,21 @@ const createQuery = async (req, res) => {
 
 const listQueries = async (req, res) => {
   try {
-    const { type, page = 1, limit = 10 } = req.body;
+    const { type, page = 1, limit = 10, search = "" } = req.body;
+
     const query = {};
+
+    // Apply type filter if provided
     if (type) query.type = type;
+
+    // Apply search filter on name or email (case-insensitive)
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { type: { $regex: search, $options: "i" } }, // optional: to allow searching by type as well
+      ];
+    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -238,6 +250,7 @@ const listQueries = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
+
 
 const deleteQuery = async (req, res) => {
   try {
