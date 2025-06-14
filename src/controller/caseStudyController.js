@@ -27,8 +27,8 @@ const createCaseStudy = async (req, res) => {
 
 const getAllCaseStudies = async (req, res) => {
   try {
-    const page = parseInt(req.body.page) || 1; // Default page = 1
-    const limit = parseInt(req.body.limit) || 10; // Default limit = 10
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 10; 
     const skip = (page - 1) * limit;
 
     const [caseStudies, total] = await Promise.all([

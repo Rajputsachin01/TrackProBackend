@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const BannerSchema = new mongoose.Schema({
+const BrandSchema = new mongoose.Schema({
     title: {
         type: String,
         default: "",
@@ -21,4 +21,4 @@ const BannerSchema = new mongoose.Schema({
 }, 
  { timestamps: true },
 );
-module.exports = mongoose.model("brand", BannerSchema);
+module.exports = mongoose.model("brand", BrandSchema);
