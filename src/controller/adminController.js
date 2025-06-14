@@ -161,7 +161,7 @@ const loginAdmin = async (req, res) => {
     admin.otp = newotp;
     await admin.save();
 
-    return Helper.success(res, "OTP sent successfull");
+    return Helper.success(res, "OTP sent successfull",{phoneNo:admin.phoneNo});
   } catch (error) {
     console.log(error);
     return Helper.fail(res, "failed to send OTP");

@@ -1,7 +1,6 @@
 const CaseStudyModel = require("../models/caseStudyModel");
 const SolutionModel = require("../models/solutionModel");
 const QueryModel = require("../models/queriesModel");
-
 const Helper = require("../utils/helper");
 
 const createCaseStudy = async (req, res) => {
