@@ -30,6 +30,7 @@ const blogRoutes = require("./src/routes/blogRoutes");
 const caseRoutes = require("./src/routes/caseStudyRoutes");
 const careerContentRoutes = require("./src/routes/careerContentRoutes");
 const useCaseRoutes = require("./src/routes/useCaseRoutes");
+const subscriberRoutes = require("./src/routes/subscriberRoutes");
 
 
 
@@ -49,6 +50,7 @@ app.use("/v1/brand", brandRoutes);
 app.use("/v1/blog", blogRoutes);
 app.use("/v1/case", caseRoutes);
 app.use("/v1/useCase", useCaseRoutes);
+app.use("/v1/subscribe", subscriberRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
