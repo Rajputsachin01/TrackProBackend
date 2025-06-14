@@ -3,7 +3,7 @@ const router = express.Router();
 const { registerAdmin, loginAdmin, verifyOTP, updateAdmin, removeAdmin,fetchProfile,updateUserStatus } = require("../controller/adminController");
 const { isAuth } = require("../utils/auth");
 
-/*--------------------------------user Routes-------------------------------*/
+/*--------------------------------Admin Routes-------------------------------*/
 router.post("/register", registerAdmin)
 router.post("/login", loginAdmin)
 router.post("/verifyotp", verifyOTP)

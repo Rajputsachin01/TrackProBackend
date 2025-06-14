@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const termsAndConditionController = require("../controller/termsAndConditionController");
 const { isAuth,isAdmin } = require("../utils/auth");
+/*--------------------------------T&C Routes-------------------------------*/
 
 router.post("/createTerms",isAuth,isAdmin,termsAndConditionController.createTerms);
 router.post("/updateTerms/:id",isAuth,isAdmin,termsAndConditionController.updateTerms);

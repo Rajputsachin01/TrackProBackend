@@ -7,6 +7,5 @@ router.post("/createCookiesPolicy",isAuth,isAdmin,cookiesPolicyController.create
 router.post("/updateCookiesPolicy/:id",isAuth,isAdmin,cookiesPolicyController.updateCookiesPolicy);
 router.post("/removeCookiesPolicy/:id",isAuth,isAdmin,cookiesPolicyController.removeCookiesPolicy);
 router.post("/fetchPolicies", cookiesPolicyController.fetchCookiesPolicy);
-// router.post("/fetchData", cookiesPolicyController.getCurrentStockPrice);
 
 module.exports = router;

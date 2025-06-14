@@ -10,20 +10,9 @@ app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
 }));
-
-app.use(bodyParser.json()); // normal JSON parsing for other routes
+app.use(bodyParser.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-
-// const cron = require("node-cron");
-// const expireAndReassign = require("./src/utils/expireAndReaasign");
-
-// cron.schedule("*/1 * * * *", async () => {
-//   console.log("Running partner request expiry check...");
-//   await expireAndReassign();
-// });
-
 
 const userRoutes = require("./src/routes/userRoutes");
 const termsAndConditionRoutes = require("./src/routes/termsAndConditionsRoutes");

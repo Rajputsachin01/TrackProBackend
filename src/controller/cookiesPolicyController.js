@@ -1,16 +1,9 @@
 const CookiesPolicyModel = require("../models/cookiesPolicyModel");
 const Helper = require("../utils/helper");
-
-// CREATE
 const createCookiesPolicy = async (req, res) => {
   try {
-    const {
-      productName,
-      companyName,
-      effectiveDate,
-      sections,
-      contact,
-    } = req.body;
+    const { productName, companyName, effectiveDate, sections, contact } =
+      req.body;
 
     if (!productName) return Helper.fail(res, "productName is required");
     if (!companyName) return Helper.fail(res, "companyName is required");
@@ -22,14 +15,20 @@ const createCookiesPolicy = async (req, res) => {
     for (let i = 0; i < sections.length; i++) {
       const { title, content } = sections[i];
       if (!title || !content) {
-        return Helper.fail(res, `title and content required in section ${i + 1}`);
+        return Helper.fail(
+          res,
+          `title and content required in section ${i + 1}`
+        );
       }
     }
 
     if (contact) {
       const { name, location, email, phone } = contact;
       if (!name || !location || !email || !phone) {
-        return Helper.fail(res, "All contact fields (name, location, email, phone) are required");
+        return Helper.fail(
+          res,
+          "All contact fields (name, location, email, phone) are required"
+        );
       }
     }
 
@@ -41,24 +40,21 @@ const createCookiesPolicy = async (req, res) => {
       contact,
     });
 
-    return Helper.success(res, "CookiesPolicy created successfully", createdPolicy);
+    return Helper.success(
+      res,
+      "CookiesPolicy created successfully",
+      createdPolicy
+    );
   } catch (error) {
     console.error(error);
     return Helper.fail(res, error.message);
   }
 };
-
-// UPDATE
 const updateCookiesPolicy = async (req, res) => {
   try {
     const cookiesPolicyId = req.params.id;
-    const {
-      productName,
-      companyName,
-      effectiveDate,
-      sections,
-      contact,
-    } = req.body;
+    const { productName, companyName, effectiveDate, sections, contact } =
+      req.body;
 
     const existingPolicy = await CookiesPolicyModel.findById(cookiesPolicyId);
     if (!existingPolicy || existingPolicy.isDeleted) {
@@ -69,7 +65,10 @@ const updateCookiesPolicy = async (req, res) => {
       for (let i = 0; i < sections.length; i++) {
         const { title, content } = sections[i];
         if (!title || !content) {
-          return Helper.fail(res, `title and content required in section ${i + 1}`);
+          return Helper.fail(
+            res,
+            `title and content required in section ${i + 1}`
+          );
         }
       }
     }
@@ -82,13 +81,17 @@ const updateCookiesPolicy = async (req, res) => {
         effectiveDate,
         sections,
         contact,
-        },
+      },
       { new: true }
     );
 
     if (!updatedPolicy) return Helper.fail(res, "CookiesPolicy not updated");
 
-    return Helper.success(res, "CookiesPolicy updated successfully", updatedPolicy);
+    return Helper.success(
+      res,
+      "CookiesPolicy updated successfully",
+      updatedPolicy
+    );
   } catch (error) {
     console.error(error);
     return Helper.fail(res, "Failed to update CookiesPolicy");
@@ -112,55 +115,28 @@ const removeCookiesPolicy = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
-// FETCH (latest non-deleted)
 const fetchCookiesPolicy = async (req, res) => {
   try {
-    const latestPolicy = await CookiesPolicyModel.findOne({ isDeleted: false })
-      .sort({ createdAt: -1 });
+    const latestPolicy = await CookiesPolicyModel.findOne({
+      isDeleted: false,
+    }).sort({ createdAt: -1 });
 
-    if (!latestPolicy) return Helper.fail(res, "No active CookiePolicies found");
+    if (!latestPolicy)
+      return Helper.fail(res, "No active CookiePolicies found");
 
-    return Helper.success(res, "CookiesPolicy fetched successfully", latestPolicy);
+    return Helper.success(
+      res,
+      "CookiesPolicy fetched successfully",
+      latestPolicy
+    );
   } catch (error) {
     console.error(error);
     return Helper.fail(res, error.message);
   }
 };
-
-
-// const axios = require("axios");
-
-// const getCurrentStockPrice = async (req,res) => {
-//     const {symbol} = req.body;
-//   try {
-//     const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-//     const url = `https://www.alphavantage.co/query`;
-
-//     const response = await axios.get(url, {
-//       params: {
-//         function: "GLOBAL_QUOTE",
-//         symbol,
-//         apikey: API_KEY
-//       }
-//     });
-// console.log(response);
-//     const price = response.data["Global Quote"]?.["05. price"];
-//     if (!price) {
-//       throw new Error("Price not found in API response");
-//     }
-//     return Helper.success(res, "data fetched successfully", parseFloat(price));
-//   } catch (err) {
-//     console.error("Alpha Vantage Error:", err.message);
-//     throw err;
-//   }
-// };
-
-
 module.exports = {
   createCookiesPolicy,
   updateCookiesPolicy,
   removeCookiesPolicy,
   fetchCookiesPolicy,
-//   getCurrentStockPrice
 };
