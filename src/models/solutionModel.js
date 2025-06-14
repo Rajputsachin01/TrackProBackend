@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 
 const solutionSchema = new mongoose.Schema(
   {
-    type: {
-      type: String,
-      enum: ["template", "solution"],
-      required: true
-    },
+   type: {
+    type: [String],  
+    required: true,
+  },
     title: {
       type: String,
       required: true,
@@ -15,7 +14,15 @@ const solutionSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true
-    }
+    },
+     isPublished: {
+      type: Boolean,
+      default: false,
+    },
+     isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true

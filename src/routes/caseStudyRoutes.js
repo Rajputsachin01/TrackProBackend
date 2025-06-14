@@ -16,12 +16,13 @@ router.post("/get-by-id", caseController.getCaseStudyById)
 //--------------------Solution Routes---------------------------
 
 
-router.post("/createSolution",  caseController.createSolution);
-router.post("/updateSolution",  caseController.updateSolution);
-router.post("/deleteSolution",  caseController.deleteSolution);
-router.post("/listingSolution", caseController.listSolutions);
+router.post("/createSolution", isAuth,isAdmin, caseController.createSolution);
+router.post("/updateSolution",isAuth,isAdmin,  caseController.updateSolution);
+router.post("/deleteSolution", isAuth,isAdmin, caseController.deleteSolution);
+router.post("/toggleIsPublished/:id",isAuth,isAdmin,caseController.toggleIsPublished)
+router.post("/listingSolution",isAuth,isAdmin, caseController.listingSolutions);
 router.post("/fetchSolutions", caseController.fetchAllSolutions);
-
+router.post("/get-all-types", caseController.fetchAllSolutionTypes)
 //--------------------Query Routes---------------------------
 
 
