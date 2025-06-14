@@ -4,18 +4,12 @@ const caseController = require("../controller/caseStudyController");
 const { isAuth ,isAdmin} = require("../utils/auth");
 
 //--------------------Case study Routes---------------------------
-
 router.post("/createCase", caseController.createCaseStudy);
 router.post("/update", caseController.updateCaseStudy);
 router.post("/delete", caseController.deleteCaseStudy);
 router.post("/listing", caseController.getAllCaseStudies);
 router.post("/get-by-id", caseController.getCaseStudyById)
-
-
-
 //--------------------Solution Routes---------------------------
-
-
 router.post("/createSolution", isAuth,isAdmin, caseController.createSolution);
 router.post("/updateSolution",isAuth,isAdmin,  caseController.updateSolution);
 router.post("/deleteSolution", isAuth,isAdmin, caseController.deleteSolution);

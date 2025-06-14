@@ -52,7 +52,6 @@ const getCaseStudyById = async (req, res) => {
   try {
     const { id } = req.body;
     const caseStudy = await CaseStudyModel.findById(id);
-
     if (!caseStudy) return Helper.fail(res, "Case study not found");
 
     return Helper.success(res, "Case study fetched successfully", caseStudy);
@@ -85,7 +84,6 @@ const updateCaseStudy = async (req, res) => {
 const deleteCaseStudy = async (req, res) => {
   try {
     const { id } = req.body;
-
     const deleted = await CaseStudyModel.findByIdAndDelete(id);
     if (!deleted) return Helper.fail(res, "Case study not found");
 
