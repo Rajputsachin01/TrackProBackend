@@ -1,14 +1,6 @@
 const mongoose = require("mongoose")
 
 const BrandSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        default: "",
-    },
-    description: {
-        type: String,
-        default: "",
-    },
     logo: {
         type: String,
         required: true,

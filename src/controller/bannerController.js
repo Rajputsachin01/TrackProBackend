@@ -111,11 +111,9 @@ const removeBanner = async (req,res) =>{
 const listingBanner = async (req, res) => {
   try {
       const { search, limit = 3, page = 1 } = req.body;
-      console.log(search)
       const skip = (parseInt(page) - 1) * parseInt(limit);
 
-      // Building the query with search and isDeleted filter
-      let matchStage = { isDeleted: false };
+      let matchStage = {};
       if (search) {
           matchStage.$or = [
               { title: { $regex: search, $options: "i" } }     

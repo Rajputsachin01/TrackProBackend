@@ -2,14 +2,13 @@ const BrandModel = require("../models/brandModel")
 const Helper = require("../utils/helper")
 const createBrand = async (req, res) =>{
     try{
-      const { title,  description, logo } = req.body
+      const {  logo } = req.body
 
   
       if(!logo) return Helper.fail(res, "logo  is required")
   
       const brandCreated = await BrandModel.create({
-          title,
-          description,
+        
           logo
       })
       if(!brandCreated){
@@ -26,7 +25,7 @@ const createBrand = async (req, res) =>{
 const updateBrand = async(req, res)=>{
   try {
     const brandId = req.params.id
-    const { title, description, logo } = req.body
+    const {  logo } = req.body
     const isExist = await BrandModel.findById(brandId)
     if(isExist && isExist.isDeleted == true){
         return Helper.fail(res, "Brand no longer exist")
@@ -35,12 +34,7 @@ const updateBrand = async(req, res)=>{
         return Helper.fail(res, "Brand not exist")
     }
     let updatedBrand ={}
-    if(title){
-        updatedBrand.title = title
-    }
-    if(description){
-        updatedBrand.description = description
-    }
+   
     if(logo){
         updatedBrand.logo = logo
     }
@@ -107,25 +101,14 @@ const removeBrand = async (req,res) =>{
 // listing Brand 
 const listingBrand = async (req, res) => {
   try {
-      const { search, limit = 10, page = 1 } = req.body;
-      console.log(search)
-      const skip = (parseInt(page) - 1) * parseInt(limit);
-
-      // Building the query with search and isDeleted filter
-      let matchStage = { isDeleted: false };
-      if (search) {
-          matchStage.$or = [
-              { title: { $regex: search, $options: "i" } }     
-          ];
-      }
-      
+      const { limit = 10, page = 1 } = req.body;
+      const skip = (parseInt(page) - 1) * parseInt(limit);      
       // Fetch paginated Brands matching the search criteria
-      const brandList = await BrandModel.find(matchStage)
+      const brandList = await BrandModel.find()
           .skip(skip)
           .limit(parseInt(limit));
 
-      // Fetch total count for pagination info
-      const totalBrands = await BrandModel.countDocuments(matchStage);
+      const totalBrands = await BrandModel.countDocuments();
 
       if (brandList.length === 0) {
           return res.status(404).json({
@@ -162,7 +145,7 @@ const fetchAllBrands = async (req, res) => {
     const query = { isDeleted: false };
 
     const brandList = await BrandModel.find(query)
-      .sort({ createdAt: -1 }) // optional: latest brands first
+      .sort({ createdAt: -1 }) 
       .skip(skip)
       .limit(limitVal);
 
