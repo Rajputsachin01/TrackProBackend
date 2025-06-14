@@ -1,14 +1,15 @@
-const AdminModel = require("../models/adminModel")
-const UserModel = require("../models/userModel")
-const { signInToken } = require("../utils/auth")
-const Helper = require("../utils/helper")
-const bcrypt = require('bcrypt')
+const AdminModel = require("../models/adminModel");
+const UserModel = require("../models/userModel");
+const SubscriberModel = require("../models/subscriberModel");
+const QueryModel = require("../models/queriesModel");
+const { signInToken } = require("../utils/auth");
+const Helper = require("../utils/helper");
+const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 async function getUserWithToken(adminId, type) {
   try {
     let adminDetail = await adminProfile(adminId);
-    //adminDetail.first_name + " " + adminDetail.last_name, if we want to send then use it
     const token = signInToken(adminId, type);
     return { token: token, adminDetail: adminDetail };
   } catch (error) {
@@ -31,16 +32,21 @@ const adminProfile = async (adminId) => {
 };
 
 //for generating 4 digit random otp
-const generateOTP = () =>
-  Math.floor(1000 + Math.random() * 9000).toString();
+const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 
 //For creating admin
 const registerAdmin = async (req, res) => {
   try {
-    const {profileImage, firstName, lastName, phoneNo, email, password } = req.body;
-    console.log({profileImage, firstName, lastName, phoneNo, email, password })
-    // validation for required field
-    // if (!profileImage) return Helper.fail(res, "profileImage is required");
+    const { profileImage, firstName, lastName, phoneNo, email, password } =
+      req.body;
+    console.log({
+      profileImage,
+      firstName,
+      lastName,
+      phoneNo,
+      email,
+      password,
+    });
     if (!firstName) return Helper.fail(res, "First name is required");
     if (!lastName) return Helper.fail(res, "Last name is required");
     if (!phoneNo) return Helper.fail(res, "Phone number is required");
@@ -51,7 +57,7 @@ const registerAdmin = async (req, res) => {
     if (!emailRegex.test(email)) {
       return Helper.fail(res, "Email is not valid!");
     }
-    // Validating phoneNumber 
+    // Validating phoneNumber
     if (phoneNo) {
       const phoneRegex = /^\d{6,14}$/;
       if (!phoneRegex.test(phoneNo)) {
@@ -64,12 +70,15 @@ const registerAdmin = async (req, res) => {
     }
     let adminCheck = await AdminModel.find(checkObj);
     if (adminCheck.length > 0) {
-      return Helper.fail(res, "Admin already exists with this email or mobile!");
+      return Helper.fail(
+        res,
+        "Admin already exists with this email or mobile!"
+      );
     }
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     // Generate OTP
     // const otp = generateOTP();
-    const otp = "1234"
+    const otp = "1234";
     const userObj = {
       profileImage,
       firstName,
@@ -78,16 +87,14 @@ const registerAdmin = async (req, res) => {
       phoneNo,
       password: hashedPassword,
       otp: otp,
-
     };
     const createAdmin = await AdminModel.create(userObj);
     return Helper.success(res, "Admin registered successfully", createAdmin);
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" })
+    res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 //for verifying OTP
 const verifyOTP = async (req, res) => {
@@ -107,30 +114,28 @@ const verifyOTP = async (req, res) => {
     if (!user) {
       return Helper.fail(res, "Invalid OTP");
     }
-    // let newotp = generateOTP();
     let newotp = "1234";
-    await AdminModel.updateOne(
-      { phoneNo: phoneNo },
-      { $set: { otp: newotp } }
-    );
-    // Generate JWT token and user details
-    const type = "admin"
+    await AdminModel.updateOne({ phoneNo: phoneNo }, { $set: { otp: newotp } });
+    const type = "admin";
     const { token, adminDetail } = await getUserWithToken(user._id, type);
     if (!token || !adminDetail) {
       return Helper.error("Failed to generate token or get admin profile");
     }
-    res.cookie("token", token)
-    return Helper.success(res, "otp is verified and Token generated successfully.", {
-      token,
-      adminDetail,
-    });
+    res.cookie("token", token);
+    return Helper.success(
+      res,
+      "otp is verified and Token generated successfully.",
+      {
+        token,
+        adminDetail,
+      }
+    );
   } catch (error) {
     console.error(error);
     return Helper.fail(res, error.message);
   }
 };
 
-//for user login
 const loginAdmin = async (req, res) => {
   try {
     const { phoneNo } = req.body;
@@ -142,23 +147,21 @@ const loginAdmin = async (req, res) => {
       query.phoneNo = phoneNo;
     }
     const admin = await AdminModel.findOne({
-      $or: [phoneNo ? { phoneNo } : null].filter(
-        Boolean
-      ),
-      isDeleted: false
+      $or: [phoneNo ? { phoneNo } : null].filter(Boolean),
+      isDeleted: false,
     });
     if (!admin) {
-      return Helper.fail(res, "admin not found, please enter a valid phone number");
+      return Helper.fail(
+        res,
+        "admin not found, please enter a valid phone number"
+      );
     }
     // const otp = generateOTP();
     const newotp = "1234";
     admin.otp = newotp;
     await admin.save();
 
-    // here code for send the otp to user's phone number
-
     return Helper.success(res, "OTP sent successfull");
-
   } catch (error) {
     console.log(error);
     return Helper.fail(res, "failed to send OTP");
@@ -169,8 +172,7 @@ const loginAdmin = async (req, res) => {
 const updateAdmin = async (req, res) => {
   try {
     let adminId = req.userId;
-    const { profileImage, firstName, lastName, email, phoneNo } =
-      req.body;
+    const { profileImage, firstName, lastName, email, phoneNo } = req.body;
     if (!adminId) {
       return Helper.fail(res, "adminId is missing from request");
     }
@@ -189,7 +191,7 @@ const updateAdmin = async (req, res) => {
       }
     }
     let admin = await AdminModel.findById(adminId);
-    console.log(admin)
+    console.log(admin);
     if (!admin) {
       return Helper.fail(res, "admin not found!");
     }
@@ -251,18 +253,22 @@ const removeAdmin = async (req, res) => {
       return Helper.fail(res, "No admin found!");
     }
     return Helper.success(res, " Admin deleted successfully", deleted);
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
     return Helper.fail(res, error.message);
   }
-}
+};
 
 //for fetching admin Profile
 const fetchProfile = async (req, res) => {
   try {
     const adminId = req.userId;
-    const admin = await AdminModel.findById(adminId).select({ password: 0, __v: 0, createdAt: 0, updatedAt: 0 });
+    const admin = await AdminModel.findById(adminId).select({
+      password: 0,
+      __v: 0,
+      createdAt: 0,
+      updatedAt: 0,
+    });
     if (!admin) {
       return Helper.fail(res, "admin not found");
     }
@@ -273,27 +279,24 @@ const fetchProfile = async (req, res) => {
   }
 };
 
-//for Updating user status by admin
-const updateUserStatus = async (req, res) => {
+const fetchAnalytics = async (req, res) => {
   try {
-    const { userId,status } = req.body;
+    const [totalUsers, totalSubscribers, totalQueries] = await Promise.all([
+      UserModel.countDocuments({}),
+      SubscriberModel.countDocuments({}),
+      QueryModel.countDocuments({})
+    ]);
 
-    if (!userId) {
-      return Helper.fail(res, "User ID is required");
-    }
-    const user = await UserModel.findById(userId);
+    const analytics = {
+      totalUsers,
+      totalSubscribers,
+      totalQueries
+    };
 
-    if (!user) {
-      return Helper.fail(res, "User not found");
-    }
-
-    user.status = status;
-    await user.save();
-
-    return Helper.success(res, "User Status Updated successfully", user);
+    return Helper.success(res, "Analytics fetched successfully", analytics);
   } catch (error) {
     console.log(error);
-    return Helper.fail(res, "Failed to Update User Status user");
+    return Helper.fail(res, error.message);
   }
 };
 
@@ -305,7 +308,5 @@ module.exports = {
   updateAdmin,
   removeAdmin,
   fetchProfile,
-  updateUserStatus
-
+  fetchAnalytics,
 };
-

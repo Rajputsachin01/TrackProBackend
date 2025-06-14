@@ -6,7 +6,6 @@ const saltRounds = 10;
 async function getUserWithToken(userId, type) {
   try {
     let userDetail = await userProfile(userId);
-    //userDetail.first_name + " " + userDetail.last_name, if we want to send then use it
     const token = signInToken(userId, type);
     return { token: token, userDetail: userDetail };
   } catch (error) {
@@ -30,111 +29,7 @@ const userProfile = async (userId) => {
 //for generating 4 digit random otp
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 //For creating user
-// const registerUser = async (req, res) => {
-//   try {
-//     const { img, name, email, password, phoneNo, address, location, referralCode } =
-//       req.body;
 
-//     // validation for required field
-//     if (!img) {
-//       return Helper.fail(res, "image is required");
-//     }
-//     if (!name) {
-//       return Helper.fail(res, "name is required");
-//     }
-//     if (!email) {
-//       return Helper.fail(res, "email is required");
-//     }
-//     if (!password) {
-//       return Helper.fail(res, "password is required");
-//     }
-//     if (!phoneNo) {
-//       return Helper.fail(res, "phoneNo is required");
-//     }
-//     if (!address) {
-//       return Helper.fail(res, "address is required");
-//     }
-//     if (!location) {
-//       return Helper.fail(res, "location is required");
-//     }
-//     // Validating email format
-//     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-//     if (!emailRegex.test(email)) {
-//       return Helper.fail(res, "Email is not valid!");
-//     }
-//     // Validating phone no.
-//     if (phoneNo) {
-//       const phoneRegex = /^\d{6,14}$/; // Allows only digits(0-9) and ensures length is between 6 and 14
-//       if (!phoneRegex.test(phoneNo)) {
-//         return Helper.fail(res, " number is not valid!");
-//       }
-//     }
-//     let checkObj = { $or: [{ email: email }] };
-//     if (phoneNo) {
-//       checkObj.$or.push({ phoneNo: phoneNo });
-//     }
-//     // let userCheck = await UserModel.find(checkObj, {isDeleted: false});
-//     let userCheck = await UserModel.find(checkObj);
-//     if (userCheck.length > 0) {
-//       return Helper.fail(
-//         res,
-//         "User already exists with this email or mobile No.!"
-//       );
-//     }
-//     // Generate unique referral code
-//     const generateReferralCode = async () => {
-//       let isUnique = false,
-//         uniqueCode;
-//       while (!isUnique) {
-//         const letters = String.fromCharCode(
-//           65 + Math.floor(Math.random() * 26),
-//           65 + Math.floor(Math.random() * 26)
-//         );
-//         const digits = Math.floor(1000 + Math.random() * 9000);
-//         uniqueCode = `${letters}${digits}`;
-//         const existingCode = await UserModel.findOne({
-//           referralCode: uniqueCode,
-//         });
-//         if (!existingCode) isUnique = true;
-//       }
-//       return uniqueCode;
-//     };
-//     const newReferralCode = await generateReferralCode();
-//     let referredBy = null;
-//     if (referralCode) {
-//       const referrer = await UserModel.findOne({ referralCode });
-//       if (!referrer) {
-//         return Helper.fail(res, "Invalid Referral Code!");
-//       }
-//       referredBy = referrer._id;
-//     }
-//     //for hashing password
-//     const hashedPassword = await bcrypt.hash(password, saltRounds);
-//     // Generate OTP
-//     // const otp = generateOTP();
-//     const otp = "1234"
-//     const userObj = {
-//               userName,
-//       img,
-//       name,
-//       email,
-//       phoneNo,
-//       address,
-//       location,
-//       password: hashedPassword ,
-//       otp: otp,
-//       referralCode: newReferralCode,
-//       referredBy,
-//     };
-
-//     const createUser = await UserModel.create(userObj);
-//     return Helper.success(res, "OTP successfully", createUser);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// };
-//new one
 const registerUser = async (req, res) => {
   try {
     const {
@@ -142,26 +37,19 @@ const registerUser = async (req, res) => {
       email,
       password,
       phoneNo,
-      referralCode,
     } = req.body;
-
-    // 1. Field Validations
     if (!name) return Helper.fail(res, "name is required");
     if (!email) return Helper.fail(res, "email is required");
     if (!password) return Helper.fail(res, "password is required");
     if (!phoneNo) return Helper.fail(res, "phoneNo is required");
-
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailRegex.test(email)) return Helper.fail(res, "Email is not valid!");
-
     const phoneRegex = /^\d{6,14}$/;
     if (!phoneRegex.test(phoneNo))
       return Helper.fail(res, "Phone number is not valid!");
-
-    // 2. Check if user exists with same email or phoneNo
     const existingUser = await UserModel.findOne({
       $or: [{ email }, { phoneNo }],
-      isDeleted: false, // only if you use soft deletes
+      isDeleted: false, 
     });
 
     if (existingUser) {
@@ -170,61 +58,25 @@ const registerUser = async (req, res) => {
         "User already exists with this email or phone number!"
       );
     }
-
-    // 3. Generate referral code
-    const generateReferralCode = async () => {
-      let isUnique = false,
-        uniqueCode;
-      while (!isUnique) {
-        const letters = String.fromCharCode(
-          65 + Math.floor(Math.random() * 26),
-          65 + Math.floor(Math.random() * 26)
-        );
-        const digits = Math.floor(1000 + Math.random() * 9000);
-        uniqueCode = `${letters}${digits}`;
-        const existing = await UserModel.findOne({ referralCode: uniqueCode });
-        if (!existing) isUnique = true;
-      }
-      return uniqueCode;
-    };
-
-    const newReferralCode = await generateReferralCode();
-
-    // 4. Validate referral code (optional)
-    let referredBy = null;
-    if (referralCode) {
-      const referrer = await UserModel.findOne({ referralCode });
-      if (!referrer) return Helper.fail(res, "Invalid Referral Code!");
-      referredBy = referrer._id;
-    }
-
-    // 5. Hash password
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     let baseName = name.toLowerCase().replace(/\s+/g, "");
     let lastThree = String(phoneNo).slice(-3);
     let userName = `${baseName}${lastThree}`;
-
-    // Ensure username is unique
     let usernameExists = await UserModel.findOne({ userName });
     while (usernameExists) {
-      const rand = Math.floor(100 + Math.random() * 900); // random 3 digits
+      const rand = Math.floor(100 + Math.random() * 900); 
       userName = `${baseName}${rand}`;
       usernameExists = await UserModel.findOne({ userName });
     }
 
-    // 7. Create User
     const otp = "1234"; // For dev only, replace with actual generation
     const userObj = {
       userName,
-      
       name,
       email,
       phoneNo,
       password: hashedPassword,
       otp,
-      referralCode: newReferralCode,
-      referredBy,
     };
 
     const createdUser = await UserModel.create(userObj);
@@ -253,13 +105,10 @@ const updateUser = async (req, res) => {
 
     let objToUpdate = {};
 
-    // Validate and update name
     if (name && name !== user.name) {
       objToUpdate.name = name;
     }
 
-
-    // Validate and update email
     if (email && email !== user.email) {
       const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
       if (!emailRegex.test(email)) {
@@ -277,7 +126,6 @@ const updateUser = async (req, res) => {
       objToUpdate.email = email;
     }
 
-    // Validate and update phoneNo
     if (phoneNo && phoneNo !== user.phoneNo) {
       const phoneRegex = /^\d{6,14}$/;
       if (!phoneRegex.test(phoneNo)) {
@@ -294,7 +142,6 @@ const updateUser = async (req, res) => {
 
       objToUpdate.phoneNo = phoneNo;
     }
-    // Proceed with update only if something has changed
     if (Object.keys(objToUpdate).length === 0) {
       return Helper.success(res, "No changes detected in profile", user);
     }
@@ -381,7 +228,6 @@ const verifyOTP = async (req, res) => {
       return Helper.fail(res, "Either phone number or email is required");
     }
 
-    // Validate phone number if provided
     if (number) {
       const phoneRegex = /^\d{6,14}$/;
       if (!phoneRegex.test(number)) {
@@ -389,7 +235,6 @@ const verifyOTP = async (req, res) => {
       }
     }
 
-    // Build dynamic query for OTP verification
     const query = {
       otp,
       ...(number ? { phoneNo: number } : {}),
@@ -402,29 +247,15 @@ const verifyOTP = async (req, res) => {
       return Helper.fail(res, "Invalid OTP");
     }
 
-    // Invalidate OTP (you can also clear it by setting to null/empty string)
-    const newOtp = "1234"; // Replace with generateOTP() in real-world apps
+    const newOtp = "1234";
     await UserModel.updateOne({ _id: user._id }, { $set: { otp: newOtp } });
 
-    // Generate token and get user profile
     const type = "user";
     const { token, userDetail } = await getUserWithToken(user._id, type);
     if (!token || !userDetail) {
       return Helper.error("Failed to generate token or get user profile");
     }
 
-    // Apply referral bonus if applicable
-    if (user.referredBy) {
-      const referralBonus = 100;
-      await WalletModel.findOneAndUpdate(
-        { userId: user.referredBy },
-        { $inc: { points: referralBonus } },
-        { upsert: true }
-      );
-      console.log(`100 points credited to referrer: ${user.referredBy}`);
-    }
-
-    // Set token cookie and return success response
     res.cookie("token", token);
     return Helper.success(res, "Token generated successfully.", {
       token,
@@ -444,7 +275,6 @@ const resendOTP = async (req, res) => {
     if (!number) {
       return Helper.fail(res, "Please provide phone number.");
     }
-    // Find user using or number
     const user = await UserModel.findOne({ phoneNo: number });
 
     if (!user) {
@@ -453,7 +283,7 @@ const resendOTP = async (req, res) => {
     // Generate new OTP and set expiry
     // generateOTP();
     const otp = "1234";
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
     await UserModel.updateOne({ _id: user._id }, { $set: { otp, otpExpires } });
     return Helper.success(res, "OTP resent successfully.");
   } catch (error) {
@@ -461,49 +291,6 @@ const resendOTP = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
-//for user login
-// const loginUser = async (req, res) => {
-//   try {
-//     // const { phoneNo, email, password } = req.body;
-//     const { phoneNo } = req.body
-//     if (!password) {
-//       return Helper.fail(res, "Please enter password");
-//     }
-//     const query = {};
-//     if (phoneNo) {
-//       query.phoneNo = phoneNo;
-//     }
-//     const user = await UserModel.findOne({
-//       $or: [phoneNo ? { phoneNo } : null].filter(
-//         Boolean
-//       ),
-//     });
-
-//     // if (email) {
-//     //   query.email = email;
-//     // }
-//     // const user = await UserModel.findOne({
-//     //   $or: [phoneNo ? { phoneNo } : null, email ? { email } : null].filter(
-//     //     Boolean
-//     //   ),
-//     // });
-
-//     const otp = generateOTP();
-//     if (!user) {
-//       return Helper.fail(res, "User not found ");
-//     }
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return Helper.fail(res, "Invalid password");
-//     }
-//     return Helper.success(res, "Login successfull", user);
-//   } catch (error) {
-//     console.log(error);
-//     return Helper.fail(res, "Login failed");
-//   }
-// };
-
 // login using only phone number
 const loginUser = async (req, res) => {
   try {
@@ -525,8 +312,7 @@ const loginUser = async (req, res) => {
       return Helper.fail(res, "User not found");
     }
 
-    // Generate and save OTP
-    const newOtp = "1234"; // Replace with generateOTP() in production
+    const newOtp = "1234"; 
     user.otp = newOtp;
     await user.save();
     return Helper.success(res, "OTP sent successfully",user.email);
@@ -536,23 +322,6 @@ const loginUser = async (req, res) => {
   }
 };
 
-
-
-// fetch referralCode
-const fetchReferralCode = async (req, res) => {
-  const userId = req.userId;
-  if (!userId) {
-    return Helper.fail(res, "userId is required");
-  }
-  const referralCode = await UserModel.findOne({
-    _id: userId,
-    isDeleted: false,
-  }).select("img name email phoneNo referralCode");
-  if (!referralCode) {
-    return Helper.fail(res, "user not exist");
-  }
-  return Helper.success(res, "referral code fetched", referralCode);
-};
 
 const listingUser = async (req, res) => {
   try {
@@ -600,6 +369,5 @@ module.exports = {
   loginUser,
   verifyOTP,
   resendOTP,
-  fetchReferralCode,
   listingUser,
 };
