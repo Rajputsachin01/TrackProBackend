@@ -27,7 +27,7 @@ const createCaseStudy = async (req, res) => {
 const getAllCaseStudies = async (req, res) => {
   try {
     const page = parseInt(req.body.page) || 1;
-    const limit = parseInt(req.body.limit) || 10; 
+    const limit = parseInt(req.body.limit) || 10;
     const skip = (page - 1) * limit;
 
     const [caseStudies, total] = await Promise.all([
@@ -97,9 +97,7 @@ const deleteCaseStudy = async (req, res) => {
 const createSolution = async (req, res) => {
   try {
     const { type, title, description } = req.body;
-    if (!type || !["template", "solution"].includes(type)) {
-      return Helper.fail(res, "Invalid or missing type");
-    }
+    if (!type) return Helper.fail(res, "type is required");
     if (!title) return Helper.fail(res, "Title is required");
 
     const solution = await SolutionModel.create({ type, title, description });
@@ -180,13 +178,11 @@ const listingSolutions = async (req, res) => {
     let matchStage = { isDeleted: false };
 
     if (search) {
-      matchStage.$or = [
-        { title: { $regex: search, $options: "i" } },
-      ];
+      matchStage.$or = [{ title: { $regex: search, $options: "i" } }];
     }
 
     if (type) {
-      matchStage.type = { $in: [type] };
+      matchStage.type = type;
     }
 
     const solutionsList = await SolutionModel.find(matchStage)
@@ -226,7 +222,7 @@ const fetchAllSolutions = async (req, res) => {
     let query = { isDeleted: false, isPublished: true };
 
     if (type) {
-      query.type = { $in: [type] };
+      query.type = type;
     }
 
     const solutionList = await SolutionModel.find(query)
@@ -278,35 +274,29 @@ const toggleIsPublished = async (req, res) => {
   }
 };
 
-
-
 const fetchAllSolutionTypes = async (req, res) => {
   try {
     const result = await SolutionModel.aggregate([
-      { $match: { isDeleted: false } },
-      { $unwind: "$type" },
+      { $match: { isDeleted: false, isPublished: true } },
       { $group: { _id: "$type" } },
-      { $sort: { _id: 1 } }
+      { $sort: { _id: 1 } },
     ]);
 
-    const uniqueTypes = result.map(item => item._id);
+    const uniqueTypes = result.map((item) => item._id);
 
-    return Helper.success(res,"Unique types fetched", uniqueTypes);
+    return Helper.success(res, "Unique types fetched", uniqueTypes);
   } catch (error) {
     console.error("Error fetching unique types:", error);
     return res.status(500).json({ status: false, message: error.message });
   }
 };
 
-
-
-
-
 const createQuery = async (req, res) => {
   try {
-    const { type, name, email, phoneNo, companyName, message,isDemo } = req.body;
+    const { type, name, email, phoneNo, companyName, message, isDemo } =
+      req.body;
 
-    if (!type || !name || !email ) {
+    if (!type || !name || !email) {
       return Helper.fail(res, "type, name, and email are required");
     }
 
@@ -317,7 +307,7 @@ const createQuery = async (req, res) => {
       phoneNo,
       companyName,
       message,
-      isDemo
+      isDemo,
     });
 
     return Helper.success(res, "Query submitted successfully", query);
@@ -367,7 +357,6 @@ const listQueries = async (req, res) => {
     return Helper.fail(res, error.message);
   }
 };
-
 
 const deleteQuery = async (req, res) => {
   try {

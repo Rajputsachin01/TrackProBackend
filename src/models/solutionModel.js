@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const solutionSchema = new mongoose.Schema(
   {
    type: {
-    type: [String],  
+    type: String,  
     required: true,
   },
     title: {
